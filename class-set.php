@@ -25,10 +25,8 @@ class Set extends ArrayObject
     public function __construct ()
     {
         parent::__construct( [], ArrayObject::STD_PROP_LIST );
-        foreach ( func_get_args() as $insert ) {
+        foreach ( func_get_args() as $insert )
             $this->add( $insert );
-        }
-        $this->size = $this->count();
     }
 
     /**
@@ -39,10 +37,7 @@ class Set extends ArrayObject
      */
     public function add( $value )
     {
-        if ( ! $this->has( $value ) ) {
-            $this->append( $value );
-            $this->size++;  
-        }
+        $this->append( $value );
         return $this;
     }
 
@@ -130,6 +125,28 @@ class Set extends ArrayObject
     public function values()
     {
         return $this->getArrayCopy();
+    }
+
+    /**
+     * The main setter for the Array functionality.
+     *
+     * Ensures duplicates cant exist and updates the size property on value insert
+     * 
+     * @param  int|null $offset  The key to insert a value at
+     * @param  mixed    $value   The value to insert
+     * @return void
+     */
+    public function offsetSet( $offset, $value ) 
+    {
+        $temp = $this->values();
+        if ( $this->has( $value ) === false ) {
+            if ( is_null($offset) )    
+                $temp[] = $value;
+            else
+                $temp[$offset] = $value;
+        }
+        $this->exchangeArray($temp);
+        $this->size = $this->count();
     }
 }
 
