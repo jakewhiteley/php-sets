@@ -56,12 +56,13 @@ $newSet[0] = 2;
 // If a key is not currently in the array, the value is appended to maintain insertion order
 $newSet[4] => 'foo';
 // $newSet => [ 0 => 2, 1 => 'b', 3 => 'foo' ]
-
+````
 ## Removing values
 Values can be removed individually via `delete()`, or all at once via the `clear()` method.
 ```` php
-$set = new Set( 1, 2, 3);
+$set = set( 1, 2, 3);
 
+// delete by value
 $set->delete( 2 );
 // $set => [ 0 => 1, 1 => 3 ]
 
