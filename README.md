@@ -37,7 +37,7 @@ $set->add(1 )->add( 'a' );
 $set->add( '1' );
 // $set => [ 0 => 'a', 1 => 1, 2 => '1' ]
 ````
-As this project aims to make Set feel like a native data structure, you can also add values as would with a standard Array.
+As this project aims to make Set feel like a native data structure, you can also add values as you would with a standard Array.
 ```` php
 $set = set();
 
@@ -46,7 +46,7 @@ $set[] = 1;
 
 // as values must be unique attempting to add a duplicate value fails
 $set[] = 1;
-// $set still => [ 0 => 1]
+// $set still => [ 0 => 1 ]
 
 // you can also replace values by key, provided the new value is unique
 $newSet = set( 'a', 'b' );
@@ -60,7 +60,7 @@ $newSet[4] => 'foo';
 ## Removing values
 Values can be removed individually via `delete()`, or all at once via the `clear()` method.
 ```` php
-$set = set( 1, 2, 3);
+$set = set( 1, 2, 3 );
 
 // delete by value
 $set->delete( 2 );
