@@ -1,10 +1,13 @@
 <?php
 
 /**
- * Pre PHP 7.0 Set
- * Behaves like a set in java/javascript etc 
+ * PHP implementation of a Java like Set object
  *
  * Stores one dimensional unique data
+ * 
+ * @author Jake Whiteley <https://github.com/jakewhiteley>
+ * @version 1.0
+ * @license http://www.gnu.org/licenses/gpl-3.0.en.html
  */
 class Set extends ArrayObject
 {
