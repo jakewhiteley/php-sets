@@ -3,7 +3,7 @@ An implementation of a Java-like Set data structure for PHP. A Set allows storag
 
 Set objects are collections of values, you can iterate its elements in insertion order. A value in the Set may only occur once; it is unique in the Set's collection. 
 
-Implementation is based on the [MDN JS Reference](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Set) for Sets in EMCA 6 JavaScript.
+Implementation is based on the [MDN JS Reference](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Set) for Sets in EMCA 6 JavaScript, and every effort has been made to provide a native-like an intuative interface.
 
 ## Initialization
 A set instance can be created either as an object, or as a native-like function. When you create a set, you can insert intial values or keep it empty.
@@ -37,6 +37,25 @@ $set->add(1 )->add( 'a' );
 $set->add( '1' );
 // $set => [ 0 => 'a', 1 => 1, 2 => '1' ]
 ````
+As this project aims to make Set feel like a native data structure, you can also add values as would with a standard Array.
+```` php
+$set = set();
+
+$set[] = 1;
+// $set => [ 0 => 1 ]
+
+// as values must be unique attempting to add a duplicate value fails
+$set[] = 1;
+// $set still => [ 0 => 1]
+
+// you can also replace values by key, provided the new value is unique
+$newSet = set( 'a', 'b' );
+$newSet[0] = 2;
+// $newSet => [ 0 => 2, 1 => 'b' ]
+
+// If a key is not currently in the array, the value is appended to maintain insertion order
+$newSet[4] => 'foo';
+// $newSet => [ 0 => 2, 1 => 'b', 3 => 'foo' ]
 
 ## Removing values
 Values can be removed individually via `delete()`, or all at once via the `clear()` method.
@@ -45,6 +64,10 @@ $set = new Set( 1, 2, 3);
 
 $set->delete( 2 );
 // $set => [ 0 => 1, 1 => 3 ]
+
+// You can also delete values by key
+unset( $set[0] );
+// $set => [ 0 => 3 ]
 
 $set->clear();
 // $set => []
