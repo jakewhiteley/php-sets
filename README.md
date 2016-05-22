@@ -3,7 +3,10 @@ An implementation of a Java-like Set data structure for PHP. A Set allows storag
 
 Set objects are collections of values, you can iterate its elements in insertion order. A value in the Set may only occur once; it is unique in the Set's collection. 
 
-Implementation is based on the [MDN JS Reference](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Set) for Sets in EMCA 6 JavaScript, and every effort has been made to provide a native-like an intuative interface.
+Implementation is based on the [MDN JS Reference](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Set) for Sets in EMCA 6 JavaScript.
+
+Sets require a min PHP version of 5.4.
+
 
 ## Initialization
 A set instance can be created either as an object, or as a native-like function. When you create a set, you can insert intial values or keep it empty.
