@@ -64,8 +64,6 @@ class Set extends ArrayObject
         $key = array_search( $value, $this->getArrayCopy(), true );
         if ( $key !== false ) {
             unset($this[$key]);
-            $this->exchangeArray( array_values($this->getArrayCopy()) );
-            $this->size--;
             return true;
         }
         return false;
@@ -146,6 +144,21 @@ class Set extends ArrayObject
                 $temp[$offset] = $value;
         }
         $this->exchangeArray($temp);
+        $this->size = $this->count();
+    }
+
+    /**
+     * The main UNsetter for the Array functionality.
+     * 
+     * @param  int $offset  The key to remove a value at
+     * @return void
+     */
+    public function offsetUnset( $offset ) 
+    {
+        $temp = $this->values();
+        if ( isset($temp[$offset]) )
+            unset($temp[$offset]);
+        $this->exchangeArray( array_values($temp) );
         $this->size = $this->count();
     }
 }
