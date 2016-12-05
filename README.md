@@ -7,6 +7,11 @@ Implementation is based on the [MDN JS Reference](https://developer.mozilla.org/
 
 Sets require a min PHP version of 5.4.
 
+### Todo
+* Method/function to perform UNION operations on sets (joining 2 or more sets together)
+* Method/function to return INTERSECTION of sets (common elements between 2 or more sets)
+* Method/function to return DIFFERENCE between 2 sets
+* Method/function to return whether a set is  SUBSET of a different set
 
 ## Initialization
 A set instance can be created either as an object, or as a native-like function. When you create a set, you can insert intial values or keep it empty.
