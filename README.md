@@ -14,7 +14,13 @@ Sets require a min PHP version of 5.4.
 * Method/function to return whether a set is  SUBSET of a different set
 
 ## Composer
-Just run `composer require jakewhiteley/php-sets` to include this package in your project
+PHP-Sets is available via [Composer/Packagist](https://packagist.org/packages/jakewhiteley/php-sets), so just add this line to your composer.json file:
+
+`"jakewhiteley/php-sets": "~1.0"`
+
+or
+
+`composer require jakewhiteley/php-sets`
 
 ## Initialization
 A set instance can be created either as an object, or as a native-like function. When you create a set, you can insert intial values or keep it empty.
