@@ -2,6 +2,7 @@
     "name": "jakewhiteley/php-sets",
     "description": "An implementation of a Java-like Set data structure for PHP. A Set is an iterable data structure which allows strict-type storage of unique values.",
     "license": "GPL-3.0",
+    "version": "1.0.0",
     "require": {
         "php": "^5.4 || ^7.0"
     }
