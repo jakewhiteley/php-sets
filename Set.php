@@ -1,5 +1,7 @@
 <?php
 
+namespace PhpSets;
+
 /**
  * PHP implementation of a Java like Set object
  *
