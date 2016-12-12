@@ -2,6 +2,9 @@
 
 namespace JakeWhiteley\PhpSets;
 
+// incluse native-like helper functions
+require( __DIR__ . '/functions.php' );
+
 /**
  * PHP implementation of a Java like Set object
  *
@@ -163,14 +166,4 @@ class Set extends \ArrayObject
         $this->exchangeArray( array_values($temp) );
         $this->size = $this->count();
     }
-}
-
-/**
- * An additional function which allows a non OOP initialization of the Set object
- *
- * @param  mixed ...$args Values to initially add to the Set object
- */
-function set() 
-{
-    return ( new \ReflectionClass('Set') )->newInstanceArgs( func_get_args() );
 }
