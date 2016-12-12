@@ -7,5 +7,5 @@
  */
 function set() 
 {
-    return ( new \ReflectionClass('Set') )->newInstanceArgs( func_get_args() );
+    return ( new \ReflectionClass('\JakeWhiteley\PhpSets\Set') )->newInstanceArgs( func_get_args() );
 }
