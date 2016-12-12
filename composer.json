@@ -7,8 +7,8 @@
         "php": "^5.4 || ^7.0"
     },
     "autoload": {
-        "psr-0": {
-            "PhpSets": "/"
+        "psr-4": {
+            "JakeWhiteley\\PhpSets\\": ""
         }
     }
 }
