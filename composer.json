@@ -7,6 +7,7 @@
         "php": "^5.4 || ^7.0"
     },
     "autoload": {
+        "files": "functions.php",
         "psr-4": {
             "JakeWhiteley\\PhpSets\\": ""
         }
