@@ -2,9 +2,6 @@
 
 namespace JakeWhiteley\PhpSets;
 
-// incluse native-like helper functions
-require( __DIR__ . '/functions.php' );
-
 /**
  * PHP implementation of a Java like Set object
  *
