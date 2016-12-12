@@ -11,7 +11,7 @@ namespace JakeWhiteley\PhpSets;
  * @version 1.0
  * @license http://www.gnu.org/licenses/gpl-3.0.en.html
  */
-class Set extends ArrayObject
+class Set extends \ArrayObject
 {
     /**
      * The current amount of values in the set.
@@ -26,7 +26,7 @@ class Set extends ArrayObject
      */
     public function __construct ()
     {
-        parent::__construct( [], ArrayObject::STD_PROP_LIST );
+        parent::__construct( [], \ArrayObject::STD_PROP_LIST );
         foreach ( func_get_args() as $insert )
             $this->add( $insert );
     }
@@ -172,5 +172,5 @@ class Set extends ArrayObject
  */
 function set() 
 {
-    return ( new ReflectionClass('Set') )->newInstanceArgs( func_get_args() );
+    return ( new \ReflectionClass('Set') )->newInstanceArgs( func_get_args() );
 }
