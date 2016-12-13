@@ -1,5 +1,5 @@
 # php-set-data-structure
-An implementation of a Java-like Set data structure for PHP. A Set allows storage of any values without duplicates.
+PHP-Sets allows a Java-like Set data structure in PHP in a way which feels completely native to the language
 
 Set objects are collections of values, you can iterate its elements in insertion order. A value in the Set may only occur once; it is unique in the Set's collection. 
 
@@ -7,13 +7,10 @@ Implementation is based on the [MDN JS Reference](https://developer.mozilla.org/
 
 Sets require a min PHP version of 5.4.
 
-### Todo
-* Method/function to perform UNION operations on sets (joining 2 or more sets together)
-* Method/function to return INTERSECTION of sets (common elements between 2 or more sets)
-* Method/function to return DIFFERENCE between 2 sets
-* Method/function to return whether a set is  SUBSET of a different set
 
-## Composer
+## Installing
+You can download the latest release via the releases link on this page.
+
 PHP-Sets is available via [Composer/Packagist](https://packagist.org/packages/jakewhiteley/php-sets), so just add this line to your composer.json file:
 
 `"jakewhiteley/php-sets": "~1.0"`
@@ -23,6 +20,13 @@ or
 `composer require jakewhiteley/php-sets`
 
 ## Initialization
+If you have included PHP-Sets via Composer, include the autoloader and PHP-Sets class:
+````php
+include('vendor/autoload.php');
+
+use JakeWhiteley\PhpSets\Set;
+````
+
 A set instance can be created either as an object, or as a native-like function. When you create a set, you can insert intial values or keep it empty.
 ````php
 // Function creation method
@@ -192,4 +196,55 @@ foreach ( $vals as $val ){
 // prints 12
 ````
 
+## Helper functions
+#### set_diff()
+A function for finding the difference between 2 Sets. Returns a new Set object.
+````php
+$a = set( 1, 2, 3 );
+$b = set( 2, 3, 4 );
+
+$difference = set_diff( $a, $b );
+
+// prints [1,4]
+var_dump( $difference->values() );
+````
+
+#### set_intersect()
+Returns a new Set object containing the items common between two sets:
+````php
+$a = set( 1, 2, 3 );
+$b = set( 2, 3, 4 );
+
+$intersect = set_intersect( $a, $b );
+
+// prints [2,3]
+var_dump( $intersect->values() );
+````
+
+#### set_subset()
+Checks if all the values of the second Set are present within the first Set:
+````php
+$a = set( 1, 2, 3 );
+$b = set( 2, 3 );
+
+// true
+var_Dump( set_subset( $a, $b ) );
+
+$c = set( 3, 4 );
+
+// false
+var_Dump( set_subset( $a, $c ) );
+````
+
+#### set_merge()
+Appends a second Set onto a given Set without creating duplicates:
+````php
+$a = set( 1, 2, 3 );
+$b = set( 2, 3, 4 );
+
+$merged = set_merge( $a, $b );
+
+// outputs [1,2,3,4]
+var_Dump( $merged->values() );
+````
 Contributions and changes welcome!
