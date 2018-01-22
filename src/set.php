@@ -73,6 +73,36 @@ class Set extends \ArrayObject {
 		return false;
 	}
 
+    public function diff( \PhpSets\Set $set ) {
+        $entries = $this->entries();
+        $iterator = $set->entries();
+        $intersect = new \PhpSets\Set;
+
+        // check $set values
+        while ( $entries->valid() ) {
+            if ( ! $set->has( $entries->current() ) ) {
+                $intersect->add( $entries->current() );
+            }
+
+            $entries->next();
+        }
+
+        // check $additionalSet values
+        while ( $iterator->valid() ) {
+            if ( ! $set->has( $iterator->current() ) ) {
+                $intersect->add( $iterator->current() );
+            }
+
+            $iterator->next();
+        }
+
+        // reset both Set internal pointers
+        $entries->rewind();
+        $iterator->rewind();
+
+        return $intersect;
+    }
+
 	/**
 	 * Calls $callback once for each value present in the Set object, in insertion order.
 	 *
@@ -119,15 +149,6 @@ class Set extends \ArrayObject {
 	}
 
 	/**
-	 * Returns an array of the values values with the Set onject
-	 *
-	 * @return array
-	 */
-	public function values() {
-		return $this->getArrayCopy();
-	}
-
-	/**
 	 * The main setter for the Array functionality.
 	 *
 	 * Ensures duplicates cant exist and updates the size property on value insert
@@ -166,7 +187,17 @@ class Set extends \ArrayObject {
 		}
 
 		$this->exchangeArray( array_values( $temp ) );
-        
+
 		$this->size = $this->count();
 	}
+
+    /**
+     * Returns an array of the values values with the Set onject
+     *
+     * @return array
+     */
+    public function values() {
+        return $this->getArrayCopy();
+    }
+
 }
