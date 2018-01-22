@@ -1,14 +1,27 @@
 {
     "name": "jakewhiteley/php-sets",
     "description": "An implementation of a Java-like Set data structure for PHP. A Set is an iterable data structure which allows strict-type storage of unique values.",
-    "license": "GPL-3.0",
+    "license": "GPL-3.0-or-later",
+    "authors": [
+        {
+            "name": "Jake Whiteley",
+            "email": "jakebwhiteley@gmail.com"
+        }
+    ],
     "require": {
         "php": "^5.4 || ^7.0"
     },
+    "require-dev": {
+        "phpunit/phpunit": "6.5"
+    },
     "autoload": {
-        "files": ["functions.php"],
         "psr-4": {
-            "JakeWhiteley\\PhpSets\\": ""
+            "PhpSets\\": ["src/"]
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "PhpSets\\Test\\": "test/"
         }
     }
 }
