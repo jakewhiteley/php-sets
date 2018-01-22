@@ -73,6 +73,14 @@ class Set extends \ArrayObject {
         return false;
     }
 
+    /**
+     * Returns a new Set containing all uncommon items between this and a given Set instance.
+     *
+     * @todo  This is not very efficient as it iterates both Sets completely
+     *
+     * @param  \PhpSets\Set $set
+     * @return \PhpSets\Set
+     */
     public function diff( \PhpSets\Set $set ) {
         $entries = $this->entries();
         $iterator = $set->entries();
@@ -142,6 +150,27 @@ class Set extends \ArrayObject {
      */
     public function has( $value ) {
         return array_search( $value, $this->getArrayCopy(), true ) !== false ;
+    }
+
+    /**
+     * Returns a new Set object containing the common elements between two given sets
+     *
+     * @param  \PhpSets\Set $set
+     * @return \PhpSets\Set
+     */
+    public function intersect( \PhpSets\Set $set ) {
+        $iterator = $set->entries();
+        $intersect = new \PhpSets\Set;
+
+        while ( $iterator->valid() ) {
+            if ( $this->has( $iterator->current() ) ) {
+                $intersect->add( $iterator->current() );
+            }
+            $iterator->next();
+        }
+        $iterator->rewind();
+
+        return $intersect;
     }
 
     /**
@@ -225,7 +254,7 @@ class Set extends \ArrayObject {
     public function subset( \PhpSets\Set $set ) {
         $iterator = $set->entries();
 
-        // iterate through $additionalSet and return false is an uncommon value is present
+        // iterate through $set and return false is an uncommon value is present
         while ( $iterator->valid() ) {
             if ( ! $this->has( $iterator->current() ) ) {
                 return false;
