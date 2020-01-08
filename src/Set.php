@@ -11,7 +11,8 @@ namespace PhpSets;
  * @version 1.0
  * @license http://www.gnu.org/licenses/gpl-3.0.en.html
  */
-class Set extends \ArrayObject {
+class Set extends \ArrayObject
+{
     /**
      * The current amount of values in the set.
      *
@@ -24,7 +25,8 @@ class Set extends \ArrayObject {
      *
      * @param mixed ...$args Any number of items to add to the Set object
      */
-    public function __construct() {
+    public function __construct()
+    {
         parent::__construct( [], \ArrayObject::STD_PROP_LIST );
 
         foreach ( func_get_args() as $insert ) {
@@ -38,7 +40,8 @@ class Set extends \ArrayObject {
      * @param mixed $value Value to add
      * @return Set
      */
-    public function add( $value ) {
+    public function add( $value )
+    {
         $this->append( $value );
 
         return $this;
@@ -49,7 +52,8 @@ class Set extends \ArrayObject {
      *
      * @return Set
      */
-    public function clear() {
+    public function clear()
+    {
         $this->exchangeArray( [] );
         $this->size = 0;
 
@@ -62,7 +66,8 @@ class Set extends \ArrayObject {
      * @param  mixed $value The value to remove from the Set object
      * @return boolean      True on success, false on failure to delete value
      */
-    public function delete( $value ) {
+    public function delete( $value )
+    {
         $key = array_search( $value, $this->getArrayCopy(), true );
 
         if ( $key !== false ) {
@@ -81,7 +86,8 @@ class Set extends \ArrayObject {
      * @param  \PhpSets\Set $set
      * @return \PhpSets\Set
      */
-    public function diff( \PhpSets\Set $set ) {
+    public function diff( \PhpSets\Set $set )
+    {
         $entries = $this->entries();
         $iterator = $set->entries();
         $intersect = new \PhpSets\Set;
@@ -117,7 +123,8 @@ class Set extends \ArrayObject {
      * @param  mixed    ...$args  Additional arguments to pass to the callback function
      * @return ArrayIterator
      */
-    public function each( $callback ) {
+    public function each( $callback )
+    {
         $vars = func_get_args();
 
         $iterator = $this->entries();
@@ -138,7 +145,8 @@ class Set extends \ArrayObject {
      * @see http://php.net/manual/en/class.arrayiterator.php
      * @return ArrayIterator
      */
-    public function entries() {
+    public function entries()
+    {
         return $this->getIterator();
     }
 
@@ -148,7 +156,8 @@ class Set extends \ArrayObject {
      * @param  mixed $value The value to check for.
      * @return boolean
      */
-    public function has( $value ) {
+    public function has( $value )
+    {
         return array_search( $value, $this->getArrayCopy(), true ) !== false ;
     }
 
@@ -158,7 +167,8 @@ class Set extends \ArrayObject {
      * @param  \PhpSets\Set $set
      * @return \PhpSets\Set
      */
-    public function intersect( \PhpSets\Set $set ) {
+    public function intersect( \PhpSets\Set $set )
+    {
         $iterator = $set->entries();
         $intersect = new \PhpSets\Set;
 
@@ -181,7 +191,8 @@ class Set extends \ArrayObject {
      * @param  \PhpSets\Set $set The set to append
      * @return \PhpSets\Set A new set containing the merged items
      */
-    public function merge( \PhpSets\Set $set ) {
+    public function merge( \PhpSets\Set $set )
+    {
         $iterator = $set->entries();
 
         // create a copy of $set
@@ -210,7 +221,8 @@ class Set extends \ArrayObject {
      * @param  mixed    $value   The value to insert
      * @return void
      */
-    public function offsetSet( $offset, $value ) {
+    public function offsetSet( $offset, $value )
+    {
         $temp = $this->values();
 
         if ( $this->has( $value ) === false ) {
@@ -232,7 +244,8 @@ class Set extends \ArrayObject {
      * @param  int $offset  The key to remove a value at
      * @return void
      */
-    public function offsetUnset( $offset ) {
+    public function offsetUnset( $offset )
+    {
         $temp = $this->values();
 
         if ( isset( $temp[ $offset ] ) ) {
@@ -251,7 +264,8 @@ class Set extends \ArrayObject {
      * @param  \PhpSets\Set $set  The Set to check against
      * @return bool Whether $set  was a subset of $set
      */
-    public function subset( \PhpSets\Set $set ) {
+    public function subset( \PhpSets\Set $set )
+    {
         $iterator = $set->entries();
 
         // iterate through $set and return false is an uncommon value is present
@@ -272,7 +286,8 @@ class Set extends \ArrayObject {
      *
      * @return array
      */
-    public function values() {
+    public function values()
+    {
         return $this->getArrayCopy();
     }
 }
