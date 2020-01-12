@@ -21,11 +21,10 @@ class SetTest extends TestCase
     {
         $set = new Set();
         $set->add('a');
+        $this->assertSame(['a'], $set->values());
 
-        $expected = ['a'];
-        $result = $set->values();
-
-        $this->assertSame($expected, $result);
+        $set->add('a');
+        $this->assertSame(['a'], $set->values());
     }
 
     public function testDelete()
@@ -78,18 +77,31 @@ class SetTest extends TestCase
 
     public function testDiffOnDifferentValues()
     {
+        $set = new Set(1, 2);
+        $set2 = new Set(3, 4);
+
+        $result = $set->diff($set2);
+
+        $this->assertSame(2, $result->size);
+        $this->assertSame([1,2], $result->values());
+    }
+
+    public function testDiffOnEmptySet()
+    {
         $set = new Set();
-        $set->add(1);
-        $set->add(2);
+        $set2 = new Set(3, 4);
 
+        $result = $set->diff($set2);
+        $this->assertSame(0, $result->size);
+    }
+
+    public function testDiffOnEmptyTargetSet()
+    {
+        $set = new Set(1,2);
         $set2 = new Set();
-        $set2->add(3);
-        $set2->add(4);
 
-        $expected = 4;
-        $result = $set->diff($set2)->size;
-
-        $this->assertSame($expected, $result);
+        $result = $set->diff($set2);
+        $this->assertSame(2, $result->size);
     }
 
     public function testHas()

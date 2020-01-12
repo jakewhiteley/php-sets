@@ -50,18 +50,6 @@ class Set extends ArrayObject
     }
 
     /**
-     * Removes all elements from the Set object. Returns the Set object.
-     *
-     * @return Set
-     */
-    public function clear(): Set
-    {
-        $this->exchangeArray([]);
-        $this->size = 0;
-        return $this;
-    }
-
-    /**
      * Removes the element associated to the value.
      *
      * @param mixed $value The value to remove from the Set object
@@ -80,13 +68,36 @@ class Set extends ArrayObject
     }
 
     /**
+     * Removes all elements from the Set object. Returns the Set object.
+     *
+     * @return Set
+     */
+    public function clear(): Set
+    {
+        $this->exchangeArray([]);
+        $this->size = 0;
+        return $this;
+    }
+
+    /**
+     * Returns a boolean asserting whether an element is present with the given value in the Set object or not.
+     *
+     * @param mixed $value The value to check for.
+     * @return boolean
+     */
+    public function has($value): bool
+    {
+        return array_search($value, $this->getArrayCopy(), true) !== false;
+    }
+
+    /**
      * Calls $callback once for each value present in the Set object, in insertion order.
      *
      * Any number of additional arguments can be passed to the callback.
      *
      * @param callable $callback  The callback function
      *                            The callback is called with argument 1 being the current iterated value
-     * @param mixed    $args   Additional arguments to pass to the callback function
+     * @param mixed    $args      Additional arguments to pass to the callback function
      * @return Set
      */
     public function each(callable $callback, ...$args): Set
@@ -114,17 +125,6 @@ class Set extends ArrayObject
     }
 
     /**
-     * Returns a boolean asserting whether an element is present with the given value in the Set object or not.
-     *
-     * @param mixed $value The value to check for.
-     * @return boolean
-     */
-    public function has($value): bool
-    {
-        return array_search($value, $this->getArrayCopy(), true) !== false;
-    }
-
-    /**
      * Returns an array of the values values with the Set onject
      *
      * @return array
@@ -144,55 +144,41 @@ class Set extends ArrayObject
      */
     public function merge(Set $set): Set
     {
-        $iterator = $set->entries();
-
-        // create a copy of $set
         $merged = new Set();
         $merged->exchangeArray($this->values());
 
-        // add values from $set if not present
-        while ($iterator->valid()) {
-            if (!$this->has($iterator->current())) {
-                $merged->add($iterator->current());
+        foreach ($set->values() as $value) {
+            if (!$this->has($value)) {
+                $merged->add($value);
             }
-            $iterator->next();
         }
-
-        $iterator->rewind();
 
         return $merged;
     }
 
     /**
-     * Returns a new Set containing all uncommon items between this and a given Set instance.
+     * Returns a new Set containing values preset in this set, but not in another given set.
      *
-     * @param Set $set
+     * @param Set $set Set to compare against
      * @return Set
-     * @todo  This is not very efficient as it iterates both Sets completely
      *
      */
     public function diff(Set $set): Set
     {
-        $entries = $this->entries();
-        $iterator = $set->entries();
-        $intersect = new Set;
-
-        // check $set values
-        while ($entries->valid()) {
-            if (!$set->has($entries->current())) {
-                $intersect->add($entries->current());
-            }
-
-            $entries->next();
+        if ($this->size === 0) {
+            return new Set();
         }
 
-        // check $additionalSet values
-        while ($iterator->valid()) {
-            if (!$this->has($iterator->current())) {
-                $intersect->add($iterator->current());
-            }
+        if ($set->size === 0) {
+            return (new Set())->merge($this);
+        }
 
-            $iterator->next();
+        $intersect = new Set;
+
+        foreach ($this->values() as $value) {
+            if (!$set->has($value)) {
+                $intersect->add($value);
+            }
         }
 
         return $intersect;
@@ -203,21 +189,16 @@ class Set extends ArrayObject
      * All values should be present, but ordinality does not matter
      *
      * @param Set $set The Set to check against
-     * @return bool Whether $set  was a subset of $set
+     * @return bool Whether $set was a subset of $set
      */
     public function subset(Set $set): bool
     {
-        $iterator = $set->entries();
-
         // iterate through $set and return false is an uncommon value is present
-        while ($iterator->valid()) {
-            if (!$this->has($iterator->current())) {
+        foreach ($set->values() as $value) {
+            if (!$this->has($value)) {
                 return false;
             }
-            $iterator->next();
         }
-
-        $iterator->rewind();
 
         return true;
     }
@@ -230,16 +211,13 @@ class Set extends ArrayObject
      */
     public function intersect(Set $set): Set
     {
-        $iterator = $set->entries();
-        $intersect = new Set;
+        $intersect = new Set();
 
-        while ($iterator->valid()) {
-            if ($this->has($iterator->current())) {
-                $intersect->add($iterator->current());
+        foreach ($set->values() as $value) {
+            if ($this->has($value)) {
+                $intersect->add($value);
             }
-            $iterator->next();
         }
-        $iterator->rewind();
 
         return $intersect;
     }
