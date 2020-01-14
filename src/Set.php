@@ -142,7 +142,7 @@ class Set extends ArrayObject
      * @param Set $set The set to append
      * @return Set A new set containing the merged items
      */
-    public function merge(Set $set): Set
+    public function unison(Set $set): Set
     {
         $merged = new Set();
         $merged->exchangeArray($this->values());
@@ -163,14 +163,14 @@ class Set extends ArrayObject
      * @return Set
      *
      */
-    public function diff(Set $set): Set
+    public function difference(Set $set): Set
     {
         if ($this->size === 0) {
             return new Set();
         }
 
         if ($set->size === 0) {
-            return (new Set())->merge($this);
+            return (new Set())->unison($this);
         }
 
         $intersect = new Set;
@@ -182,6 +182,21 @@ class Set extends ArrayObject
         }
 
         return $intersect;
+    }
+
+    public function symmetricDifference(Set $set): Set
+    {
+        $diff = clone $this;
+
+        foreach ($set->values() as $value) {
+            if ($diff->has($value)) {
+                $diff->delete($value);
+            } else {
+                $diff->add($value);
+            }
+        }
+
+        return $diff;
     }
 
     /**

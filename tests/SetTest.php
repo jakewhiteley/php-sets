@@ -27,6 +27,16 @@ class SetTest extends TestCase
         $this->assertSame(['a'], $set->values());
     }
 
+    public function testAddViaArrayAccess()
+    {
+        $set = new Set();
+        $set[] = 'a';
+        $this->assertSame(['a'], $set->values());
+
+        $set[] ='a';
+        $this->assertSame(['a'], $set->values());
+    }
+
     public function testDelete()
     {
         $set = new Set();
@@ -70,7 +80,7 @@ class SetTest extends TestCase
         $set2->add(2);
 
         $expected = 0;
-        $result = $set->diff($set2)->size;
+        $result = $set->difference($set2)->size;
 
         $this->assertSame($expected, $result);
     }
@@ -80,7 +90,7 @@ class SetTest extends TestCase
         $set = new Set(1, 2);
         $set2 = new Set(3, 4);
 
-        $result = $set->diff($set2);
+        $result = $set->difference($set2);
 
         $this->assertSame(2, $result->size);
         $this->assertSame([1,2], $result->values());
@@ -91,7 +101,7 @@ class SetTest extends TestCase
         $set = new Set();
         $set2 = new Set(3, 4);
 
-        $result = $set->diff($set2);
+        $result = $set->difference($set2);
         $this->assertSame(0, $result->size);
     }
 
@@ -100,7 +110,7 @@ class SetTest extends TestCase
         $set = new Set(1,2);
         $set2 = new Set();
 
-        $result = $set->diff($set2);
+        $result = $set->difference($set2);
         $this->assertSame(2, $result->size);
     }
 
@@ -153,7 +163,7 @@ class SetTest extends TestCase
         $set2->add(null);
 
         $expected = [1, 2, null];
-        $result = $set->merge($set2)->values();
+        $result = $set->unison($set2)->values();
 
         $this->assertSame($expected, $result);
     }
@@ -212,5 +222,21 @@ class SetTest extends TestCase
         $subset->add(3);
 
         $this->assertFalse($set->subset($subset));
+    }
+
+    public function testSymmetricDifference()
+    {
+        $set1 = new Set(1, 2, 'three');
+        $set2 = new Set(2, 3, 4);
+
+        $this->assertEquals([1, 'three', 3, 4], $set1->symmetricDifference($set2)->values());
+        $this->assertEqualsArray([1, 'three', 3, 4], $set2->symmetricDifference($set1)->values());
+    }
+
+    protected function assertEqualsArray($expected, $actual, $message = '')
+    {
+        sort($expected);
+        sort($actual);
+        $this->assertEquals($expected, $actual, $message);
     }
 }
