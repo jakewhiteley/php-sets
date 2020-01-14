@@ -6,19 +6,15 @@ php:
   - '7.3'
   - '7.4'
 
-before_script:
+install:
   - composer install
   - composer require satooshi/php-coveralls:~1.0@stable
   
 before_script:
  - mkdir -p build/logs 
 
-
-# Build Script. Notice: We are demanding unit to generate a clover file to our previously created folder
 script: 
-  # Syntax: phpunit --coverage-clover <folder>/<name>.xml --text-suffix .php [--colors] [--report-useless-tests] <tests location>.php
- - phpunit --coverage-clover build/logs/clover.xml --test-suffix .php --colors --report-useless-tests
+ - vendor/bin/phpunit --coverage-clover build/logs/clover.xml --test-suffix .php --colors --report-useless-tests
 
-# After success, run sh to bind coveralls
 after_success:
  - sh -c 'if( [ "$TRAVIS_PHP_VERSION" != "hhvm" ] ); then php vendor/bin/coveralls -v; fi;'
