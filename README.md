@@ -1,3 +1,5 @@
+![Travis (.com)](https://img.shields.io/travis/com/jakewhiteley/php-sets?style=flat-square)
+
 # php-set-data-structure
 A PHP implementation of a Java-like Set data structure.
 
