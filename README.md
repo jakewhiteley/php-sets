@@ -1,4 +1,4 @@
-![Travis (.com)](https://img.shields.io/travis/com/jakewhiteley/php-sets?style=flat-square)
+[![Travis (.com)](https://img.shields.io/travis/com/jakewhiteley/php-sets?style=flat-square)](https://travis-ci.com/jakewhiteley/php-sets)
 
 # php-set-data-structure
 A PHP implementation of a Java-like Set data structure.
