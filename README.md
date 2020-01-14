@@ -1,250 +1,252 @@
 # php-set-data-structure
-PHP-Sets allows a Java-like Set data structure in PHP in a way which feels completely native to the language
+A PHP implementation of a Java-like Set data structure.
 
-Set objects are collections of values, you can iterate its elements in insertion order. A value in the Set may only occur once; it is unique in the Set's collection. 
+A set is simply a group of unique things that can be iterated by the order they were inserted. So, a significant characteristic of any set is that it does not contain duplicates.
 
 Implementation is based on the [MDN JS Reference](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Set) for Sets in EMCA 6 JavaScript.
 
-Sets require a min PHP version of 5.4.
+Sets require a min PHP version of 7.1.
+
+* [Installation](#installation)
+* [**Basic usage:**](#basic-usage)
+    * [Creating a Set](#creating)
+    * [Adding values](#adding-values)
+    * [Removing values](#removing-values)
+    * [Testing if a value is present](#testing-if-a-value-is-present)
+    * [Counting items](#counting-items)
+* [**Set Iteration**](#iteration)
+    * [As a traditional Array](#as-a-traditional-array)
+    * [Using `entries()`](#using-entries)
+    * [Using `each`](#using-eachcallback-args)
+    * [Using `values`](#using-values)
+* [**Set operations**](#set-operations)
+    * [Union](#union)
+    * [Difference](#difference)
+    * [Symmetric difference](#symmetric-difference)
+    * [Intersect](#intersect)
+    * [Subsets](#subsets)
 
 
-## Installing
+## Installation
 You can download the latest release via the releases link on this page.
 
-PHP-Sets is available via [Composer/Packagist](https://packagist.org/packages/jakewhiteley/php-sets), so just add this line to your composer.json file:
+PHP-Sets is available via [Composer](https://packagist.org/packages/jakewhiteley/php-sets) by running the following command:
 
-`"jakewhiteley/php-sets": "~1.0"`
+````bash
+composer require jakewhiteley/php-sets
+````
 
-or
-
-`composer require jakewhiteley/php-sets`
-
-## Initialization
-If you have included PHP-Sets via Composer, include the autoloader and PHP-Sets class:
+then include the library in your project like so:
 ````php
 include('vendor/autoload.php');
 
-use JakeWhiteley\PhpSets\Set;
+use PhpSets\Set;
 ````
 
-A set instance can be created either as an object, or as a native-like function. When you create a set, you can insert intial values or keep it empty.
+
+## Basic Usage
+
+#### Creating a Set
+
+When you create a set, you can insert initial values or keep it empty.
 ````php
-// Function creation method
-$set = set();
-// Object creation method
-$set = new Set( 1, 2, 3 );
+$set = new Set(1, 2, 3);
+$emptySet = new Set();
 ````
 
 Sets cannot contain duplicate values, and values are stored in insertion order.
-```` php
-$set = set( 1, 2, 1, 3, 2 );
-// $set now contains [ 0 => 1, 1 => 2, 2 => 3 ]
+````php
+// $set contains [1, 2, 3] as duplicates are not stored
+$set = new Set(1, 2, 1, 3, 2);
 ````
 
-## Adding values
-New values are added to a set via the `add()` method. This method is chainable. Values can be of any type including Array and Object instances.
+#### Adding values
+Values of any type (Including Objects, arrays, and other `Sets`) are added to a set via the `add()` method.
 
 It is worth noting that uniqueness is on a **strict type** basis, so `(string) '1' !==  (int) 1 !==  (float) 1.0`. This also is true for Objects within the set and an object with a classA is not equal to an object with classB, even if the properties etc are the same.
-```` php
+````php
 // create empty Set
-$set = set(); 
+$set = new Set(); 
 
-$set->add( 'a' );
-// $set => [ 0 => 'a' ]
+$set->add('a');
+// $set => ['a']
 
-$set->add(1 )->add( 'a' );
-// $set => [ 0 => 'a', 1 => 1 ]
+$set->add(1)
+    ->add('a');
+// $set => ['a', 1]
 
-$set->add( '1' );
-// $set => [ 0 => 'a', 1 => 1, 2 => '1' ]
+$set->add('1');
+// $set => ['a', 1, '1']
 ````
-As this project aims to make Set feel like a native data structure, you can also add values as you would with a standard Array.
-```` php
-$set = set();
+
+As `Sets` implements the `ArrayAccess` interface, you can also add values as you would with a standard Array.
+````php
+$set = new Set();
 
 $set[] = 1;
-// $set => [ 0 => 1 ]
+$set[] = 'foo';
+// $set => [1, 'foo']
 
-// as values must be unique attempting to add a duplicate value fails
-$set[] = 1;
-// $set still => [ 0 => 1 ]
 
-// you can also replace values by key, provided the new value is unique
-$newSet = set( 'a', 'b' );
-$newSet[0] = 2;
-// $newSet => [ 0 => 2, 1 => 'b' ]
+// You can also replace values by key, provided the new value is unique within the Set
+$set[0] = 2;
+// $set => [2, 'foo']
 
 // If a key is not currently in the array, the value is appended to maintain insertion order
-$newSet[4] => 'foo';
-// $newSet => [ 0 => 2, 1 => 'b', 3 => 'foo' ]
+$set[4] = 'foo';
+// $newSet => [2, 'foo', 'foo']
 ````
-## Removing values
+
+#### Removing values
 Values can be removed individually via `delete()`, or all at once via the `clear()` method.
-```` php
-$set = set( 1, 2, 3 );
+````php
+$set = new Set(1, 2, 3);
 
-// delete by value
-$set->delete( 2 );
-// $set => [ 0 => 1, 1 => 3 ]
-
-// You can also delete values by key
-unset( $set[0] );
-// $set => [ 0 => 3 ]
+$set->delete(2);
+// $set => [1, 3]
 
 $set->clear();
 // $set => []
 ````
 
-## Testing if a value is present
-Testing for values is one of the main reasons to use a Set. We can do this via the `has( $value)` method.
+You can also delete methods via `ArrayAccess`:
+````php
+$set = new Set(1, 2, 3);
 
-As with the other methods, this is strict type testing.
-
-```` php
-$set = set( 'a', [1,2] );
-
-$set->add( 1.0 );
-
-$set->has( 'a' ); // true
-$set->has( [1,2] ); // true
-$set->has( 1 ) // false
-$set->has( [1,'2'] ); // false
-$set->has( 'foo' ); // false
+unset($set[0]);
+// $set => [2, 3]
 ````
 
+#### Testing if a value is present
+You can easily test if a `Set` contains a value via the `has($value)` method.
+
+As with the other methods, this is a **strict type** test.
+
+````php
+$set = new Set('a', [1, 2], 1.0);
+
+$set->has('a');      // true
+$set->has([1, 2]);   // true
+$set->has(1);        // false
+$set->has([1, '2']); // false
+$set->has('foo');    // false
+````
+
+
+#### Counting items
+This is done using the `count` method:
+````php
+$set = new Set(1, 2, 3);
+
+echo $set->count(); // 3
+````
+
+
+
+
 ## Iteration
-There are many ways to iterate a Set:
+There are many ways to iterate a `Set`:
 * Like a traditional PHP array
 * Using `entries()` to return an instance of PHP's `ArrayIterator`
 * Using `each()` and a provided callback function
 * Using `values()` which returns a traditional PHP Array version of the Set
 
 #### As a traditional Array
-The Set object extends a PHP ArrayObject, and as such can be iterated like a normal array
-```` php
-$set = set( 1, 2 );
+The Set object extends an `ArrayObject`, and can be iterated like a normal array:
+````php
+$set = new Set(1, 2);
 
-foreach ( $set as $val )
+foreach ($set as $val) {
     print($val);
-// prints 12
+}
 ````
 
 #### Using `entries()`
 The `entries()` method returns an [ArrayIterator](http://php.net/manual/en/class.arrayiterator.php) object.
-```` php
-$set = set( 1, 2 );
-
+````php
 $iterator = $set->entries();
 
-while ( $iterator->valid() ) {
+while ($iterator->valid()) {
     echo $iterator->current();
     $iterator->next();
 }
-// prints 12
 ````
 
-#### Using `each( $callback, ...$args )`
-You can also iterate a Set via a callback function. The callback is called with the current value as parameter 1, with any additional specified params after.
+#### Using `each($callback, ...$args)`
+You can also iterate a `Set` via a provided [callable](https://www.php.net/manual/en/language.types.callable.php) method. 
 
-```` php
-$set = set( 1, 2 );
+The callback is called with the current item as parameter 1, with any additional specified params passed after.
 
-function cb( $value, $param)
-{
-  echo $value * $param;
+````php
+function cb($item, $parameter) {
+  echo $item * $parameter;
 }
 
-$set->each( 'cb', 10 );
-// prints 1020
-````
-The callback is called via [call_user_func_array](http://php.net/manual/en/function.call-user-func-array.php) so any context can be passed as a callback.
-```` php
-class callbackClass {
-    private $values = [];
+$set = new Set(1, 2);
 
-    public function cb ($a) {
-        $this->values[] = $a;
-    }
-}
-
-$class = new callbackClass;
-
-$set->each( [$class, 'cb'] );
-
-print_r($class);
-/* prints callbackClass Object
-(
-    [values:callbackClass:private] => Array
-        (
-            [0] => 1
-            [1] => 2
-        )
-
-)
-*/
+$set->each('cb', 10);
+// prints 10 20
 ````
 
-#### Using `values()`
-The `values()` method returns a standard array representation of the Set. You can use this how you would with any other Array.
-```` php
-$set = set( 1, 2 );
-$vals = $set->values();
 
-foreach ( $vals as $val ){
-  echo $val;
-}
-// prints 12
-````
+## Set operations
 
-## Helper functions
-#### set_diff()
-A function for finding the difference between 2 Sets. Returns a new Set object.
+#### Union
+Appends a second `Set` onto a given `Set` without creating duplicates:
 ````php
-$a = set( 1, 2, 3 );
-$b = set( 2, 3, 4 );
+$a = new Set(1, 2, 3);
+$b = new Set(2, 3, 4);
 
-$difference = set_diff( $a, $b );
+$merged = $a->union($b);
 
-// prints [1,4]
-var_dump( $difference->values() );
+print_r($merged->values()); // [1, 2, 3, 4]
 ````
 
-#### set_intersect()
-Returns a new Set object containing the items common between two sets:
+#### Difference
+The `difference()` method will return a new `Set` containing values present in the original `Set` but not present in another. 
+
+This is also known as the _relative complement_.
 ````php
-$a = set( 1, 2, 3 );
-$b = set( 2, 3, 4 );
+$a = new Set(1, 2, 3, 4);
+$b = new Set(3, 4, 5, 6);
 
-$intersect = set_intersect( $a, $b );
-
-// prints [2,3]
-var_dump( $intersect->values() );
+print_r($a->difference($b)->values()); // [1, 2]
+print_r($b->difference($a)->values()); // [5, 6]
 ````
 
-#### set_subset()
-Checks if all the values of the second Set are present within the first Set:
+#### Symmetric Difference
+The `symmetricDifference()` method also returns a new `Set` but differs to the `difference` method in that it will return **all** uncommon values between both `Sets`.
+
 ````php
-$a = set( 1, 2, 3 );
-$b = set( 2, 3 );
+$a = new Set(1, 2, 3, 4);
+$b = new Set(3, 4, 5, 6);
 
-// true
-var_Dump( set_subset( $a, $b ) );
-
-$c = set( 3, 4 );
-
-// false
-var_Dump( set_subset( $a, $c ) );
+print_r($a->symmetricDifference($b)->values()); // [1, 2, 5, 6]
 ````
 
-#### set_merge()
-Appends a second Set onto a given Set without creating duplicates:
+#### Intersect
+Returns a new `Set` containing the items common (present in both) between two sets:
 ````php
-$a = set( 1, 2, 3 );
-$b = set( 2, 3, 4 );
+$a = new Set(1, 2, 3);
+$b = new Set(2, 3, 4);
 
-$merged = set_merge( $a, $b );
+$intersect = $a->intersect($b);
 
-// outputs [1,2,3,4]
-var_Dump( $merged->values() );
+print_r($intersect->values()); // [2, 3]
 ````
-Contributions and changes welcome!
+
+#### Subsets
+The `isSupersetOf` method returns a `bool` indicating if a given `Set` is a subset of the current `Set`.
+
+The order of values does not matter, but a subset must only contain items present in the original `Set`:
+
+````php
+$a = new Set(1, 2, 3);
+$b = new Set(2, 3);
+
+var_Dump($b->isSupersetOf($a)); // true
+var_Dump($a->isSupersetOf($b)); // false
+````
+
+### Contributing
+Contributions and changes welcome! Just open an issue or submit a PR :muscle:

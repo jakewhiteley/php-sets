@@ -202,14 +202,11 @@ class SetTest extends TestCase
 
     public function testSubsetShouldReturnTrue()
     {
-        $set = new Set();
-        $set->add(1);
-        $set->add(2);
+        $set = new Set(1, 2);
+        $subset = new Set(1);
 
-        $subset = new Set();
-        $subset->add(1);
-
-        $this->assertTrue($set->subset($subset));
+        $this->assertTrue($set->isSupersetOf($subset));
+        $this->assertFalse($subset->isSupersetOf($set));
     }
 
     public function testSubsetShouldReturnFalse()
@@ -221,7 +218,7 @@ class SetTest extends TestCase
         $subset = new Set();
         $subset->add(3);
 
-        $this->assertFalse($set->subset($subset));
+        $this->assertFalse($set->isSupersetOf($subset));
     }
 
     public function testSymmetricDifference()

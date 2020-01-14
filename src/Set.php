@@ -200,13 +200,14 @@ class Set extends ArrayObject
     }
 
     /**
-     * Checks if a given $set is a subset of the current instance
-     * All values should be present, but ordinality does not matter
+     * Checks if a given $set is a subset of the current instance.
+     *
+     * All values should be present, but ordinality does not matter.
      *
      * @param Set $set The Set to check against
      * @return bool Whether $set was a subset of $set
      */
-    public function subset(Set $set): bool
+    public function isSupersetOf(Set $set): bool
     {
         // iterate through $set and return false is an uncommon value is present
         foreach ($set->values() as $value) {
