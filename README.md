@@ -73,12 +73,8 @@ $set = new Set();
 $set->add('a');
 // $set => ['a']
 
-$set->add('a')
-    ->add(1);
+$set->add(1);
 // $set => ['a', 1]
-
-$set->add('1');
-// $set => ['a', 1, '1']
 ````
 
 As `Sets` implements the `ArrayAccess` interface, you can also add values as you would with a standard Array.
