@@ -73,8 +73,8 @@ $set = new Set();
 $set->add('a');
 // $set => ['a']
 
-$set->add(1)
-    ->add('a');
+$set->add('a')
+    ->add(1);
 // $set => ['a', 1]
 
 $set->add('1');
