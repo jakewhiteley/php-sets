@@ -142,7 +142,7 @@ class Set extends ArrayObject
      * @param Set $set The set to append
      * @return Set A new set containing the merged items
      */
-    public function unison(Set $set): Set
+    public function union(Set $set): Set
     {
         $merged = new Set();
         $merged->exchangeArray($this->values());
