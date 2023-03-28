@@ -282,4 +282,59 @@ class Set extends ArrayObject
 
         $this->size = $this->count();
     }
+
+    /**
+     * Create a function given an array
+     *
+     * @param array $elements The array of elements to create the set from
+     * @return Set
+     */
+    public static function FromArray($elements) : Set
+    {
+        $set_reflector = new \ReflectionClass("\PhpSets\Set");
+
+        return $set_reflector->newInstanceArgs($elements);
+    }
+
+    /**
+     * Union of a family (array) of sets
+     *   ([a,b,c]) => a u b u c
+     *
+     * @param array $sets -- the family of sets to take the union of
+     * @return Set
+     */
+    public static function UnionOfArray(array $sets) : Set
+    {
+      /* trivial cases */
+      if( count($sets) == 0 ) return new Set();
+      if( count($sets) == 1 ) return $sets[0];
+
+      $result = array_shift($sets);
+      foreach($sets as $set) {
+          $result = $result->union($set);
+      }
+
+      return $result;
+    }
+
+    /**
+     * Intersection of a family (array) of sets
+     *   ([a,b,c]) => a n b n c
+     *
+     * @param array $sets -- the family of sets to take the intersection of
+     * @return Set
+     */
+    public static function IntersectionOfArray(array $sets) : Set
+    {
+      /* trivial cases */
+      if( count($sets) == 0 ) return new Set(); # should be error, not {}
+      if( count($sets) == 1 ) return $sets[0];
+
+      $result = array_shift($sets);
+      foreach($sets as $set) {
+          $result = $result->intersect($set);
+      }
+
+      return $result;
+    }
 }
