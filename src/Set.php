@@ -247,7 +247,7 @@ class Set extends ArrayObject
      * @param mixed    $value  The value to insert
      * @return void
      */
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value) : void
     {
         $temp = $this->values();
 
@@ -270,7 +270,7 @@ class Set extends ArrayObject
      * @param int $offset The key to remove a value at
      * @return void
      */
-    public function offsetUnset($offset)
+    public function offsetUnset($offset) : void
     {
         $temp = $this->values();
 
