@@ -170,7 +170,7 @@ class Set extends ArrayObject
         }
 
         if ($set->size === 0) {
-            return (new Set())->unison($this);
+            return (new Set())->union($this);
         }
 
         $intersect = new Set;
@@ -289,7 +289,7 @@ class Set extends ArrayObject
      * @param array $elements The array of elements to create the set from
      * @return Set
      */
-    public static function FromArray($elements) : Set
+    public static function FromArray( array $elements ) : Set
     {
         $set_reflector = new \ReflectionClass("\PhpSets\Set");
 
@@ -303,7 +303,7 @@ class Set extends ArrayObject
      * @param array $sets -- the family of sets to take the union of
      * @return Set
      */
-    public static function UnionOfArray(array $sets) : Set
+    public static function UnionOfArray( array $sets ) : Set
     {
       /* trivial cases */
       if( count($sets) == 0 ) return new Set();
