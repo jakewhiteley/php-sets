@@ -11,7 +11,7 @@ Sets require a min PHP version of 7.1.
 
 * [Installation](#installation)
 * [**Basic usage:**](#basic-usage)
-    * [Creating a Set](#creating)
+    * [Creating a Set](#creating-a-set)
     * [Adding values](#adding-values)
     * [Removing values](#removing-values)
     * [Testing if a value is present](#testing-if-a-value-is-present)
@@ -20,7 +20,6 @@ Sets require a min PHP version of 7.1.
     * [As a traditional Array](#as-a-traditional-array)
     * [Using `entries()`](#using-entries)
     * [Using `each`](#using-eachcallback-args)
-    * [Using `values`](#using-values)
 * [**Set operations**](#set-operations)
     * [Union](#union)
     * [Difference](#difference)
@@ -28,8 +27,8 @@ Sets require a min PHP version of 7.1.
     * [Intersect](#intersect)
     * [Subsets](#subsets)
 * [**Set family operations**](#set-family-operations)
-    * [UnionOfArray](#union-of-array)
-    * [IntersectionOfArray](#intersection-of-array)
+    * [Family Union](#union-of-a-family-of-sets)
+    * [Family Intersection](#intersection-of-a-family-of-sets)
 
 ## Installation
 You can download the latest release via the releases link on this page.
@@ -64,9 +63,12 @@ Sets cannot contain duplicate values, and values are stored in insertion order.
 $set = new Set(1, 2, 1, 3, 2);
 ````
 
-If you have an array of elements, you can create a set containing those values.
+If you have an array of elements, you can either pass in the array directly, or splat the array.
 ```php
-$set = Set::FromArray([1, 2, 3]);
+$set = new Set([1, 2, 1, 3, 2]);
+
+$array = [1, 2, 1, 3, 2];
+$set = new Set(...$array);
 ```
 
 #### Adding values
@@ -165,6 +167,8 @@ foreach ($set as $val) {
     print($val);
 }
 ````
+
+Or if you want, you can iterate `$set->values()` instead.
 
 #### Using `entries()`
 The `entries()` method returns an [ArrayIterator](http://php.net/manual/en/class.arrayiterator.php) object.
@@ -265,33 +269,30 @@ and welcome.
 
 #### Union of a Family of Sets
 
-At present the family of sets needs to be in an array of `Set`s.
-Then we pass that array of sets to `Set::UnionOfArray()`.
-For example:
+At present the family of sets needs to be in an array of `Set` objects:
 ```php
-$set1 = Set(1,2,3);
-$set2 = Set(3,4,5);
-$set_family = [ $set1, $set2 ];
-$set_union = Set::UnionOfArray($set_family);
+$set1 = Set(1, 2, 3);
+$set2 = Set(3, 4, 5);
+$set2 = Set(5, 1, 6);
+
+$set_union = Set::familyUnion([$set1, $set2]); // [1, 2, 3, 4, 5, 6]
 ```
 
 #### Intersection of a Family of Sets
 
-As with `UnionOfArray`, the family of sets needs to be in an array of `Set`s.
-Then pass that array of sets to `Set::IntersectionOfArray()`.
-For example:
+As with `familyUnion`, the family of sets needs to be in an array of `Set` objects:
 ```php
 $set1 = Set(1,2,3);
 $set2 = Set(3,4,5);
 $set_family = [ $set1, $set2 ];
-$set_intersection = Set::IntersectionOfArray($set_family);
+$set_intersection = Set::familyIntersection($set_family);
 ```
 
 Note that, contrary to Set Theory, the result of
 taking the intersection of an empty array results
 in an empty array. (In Set Theory the intersection
 of an empty family is undefined as it would be the
-'set of all sets'.)
+['set of all sets'](https://en.wikipedia.org/wiki/Universal_set).)
 
 ### Contributing
 Contributions and changes welcome! Just open an issue or submit a PR :muscle:

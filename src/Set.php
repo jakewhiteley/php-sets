@@ -11,26 +11,32 @@ use ArrayObject;
  * Stores one dimensional unique data
  *
  * @author  Jake Whiteley <https://github.com/jakewhiteley>
- * @version 1.2.0
+ * @version 1.3.0
  * @license http://www.gnu.org/licenses/gpl-3.0.en.html
  */
 class Set extends ArrayObject
 {
     /**
      * The current amount of values in the set.
-     *
-     * @var integer
      */
-    public $size = 0;
+    public int $size = 0;
 
     /**
      * Create new Set
      *
-     * @param mixed $args Any number of items to add to the Set object
+     * @param mixed|array $args Any number of items to add to the Set object
      */
     public function __construct(...$args)
     {
         parent::__construct([], ArrayObject::STD_PROP_LIST);
+
+        if (count($args) === 1 && is_array($args[0])) {
+            foreach ($args[0] as $insert) {
+                $this->add($insert);
+            }
+
+            return;
+        }
 
         foreach ($args as $insert) {
             $this->add($insert);
@@ -87,7 +93,7 @@ class Set extends ArrayObject
      */
     public function has($value): bool
     {
-        return array_search($value, $this->getArrayCopy(), true) !== false;
+        return in_array($value, $this->getArrayCopy(), true);
     }
 
     /**
@@ -95,9 +101,9 @@ class Set extends ArrayObject
      *
      * Any number of additional arguments can be passed to the callback.
      *
-     * @param callable $callback  The callback function
+     * @param callable $callback The callback function
      *                            The callback is called with argument 1 being the current iterated value
-     * @param mixed    $args      Additional arguments to pass to the callback function
+     * @param mixed $args Additional arguments to pass to the callback function
      * @return Set
      */
     public function each(callable $callback, ...$args): Set
@@ -125,7 +131,7 @@ class Set extends ArrayObject
     }
 
     /**
-     * Returns an array of the values values with the Set onject
+     * Returns an array of the values within the Set.
      *
      * @return array
      */
@@ -241,21 +247,21 @@ class Set extends ArrayObject
     /**
      * The main setter for the Array functionality.
      *
-     * Ensures duplicates cant exist and updates the size property on value insert
+     * Ensure duplicates cant exist and updates the size property on value insert
      *
-     * @param int|null $offset The key to insert a value at
-     * @param mixed    $value  The value to insert
+     * @param int|null $key The key to insert a value at
+     * @param mixed $value The value to insert
      * @return void
      */
-    public function offsetSet($offset, $value) : void
+    public function offsetSet($key, $value): void
     {
         $temp = $this->values();
 
         if ($this->has($value) === false) {
-            if (is_null($offset)) {
+            if (is_null($key)) {
                 $temp[] = $value;
             } else {
-                $temp[$offset] = $value;
+                $temp[$key] = $value;
             }
         }
 
@@ -267,15 +273,15 @@ class Set extends ArrayObject
     /**
      * The main un-setter for the Array functionality.
      *
-     * @param int $offset The key to remove a value at
+     * @param int $key The key to remove a value at
      * @return void
      */
-    public function offsetUnset($offset) : void
+    public function offsetUnset($key): void
     {
         $temp = $this->values();
 
-        if (isset($temp[$offset])) {
-            unset($temp[$offset]);
+        if (isset($temp[$key])) {
+            unset($temp[$key]);
         }
 
         $this->exchangeArray(array_values($temp));
@@ -284,57 +290,57 @@ class Set extends ArrayObject
     }
 
     /**
-     * Create a function given an array
-     *
-     * @param array $elements The array of elements to create the set from
-     * @return Set
-     */
-    public static function FromArray( array $elements ) : Set
-    {
-        $set_reflector = new \ReflectionClass("\PhpSets\Set");
-
-        return $set_reflector->newInstanceArgs($elements);
-    }
-
-    /**
      * Union of a family (array) of sets
      *   ([a,b,c]) => a u b u c
      *
-     * @param array $sets -- the family of sets to take the union of
+     * @param array<int, Set> $sets The family of sets to take the union of
      * @return Set
      */
-    public static function UnionOfArray( array $sets ) : Set
+    public static function familyUnion(array $sets): Set
     {
-      /* trivial cases */
-      if( count($sets) == 0 ) return new Set();
-      if( count($sets) == 1 ) return $sets[0];
+        /* trivial cases */
+        if (count($sets) === 0) {
+            return new Set();
+        }
 
-      $result = array_shift($sets);
-      foreach($sets as $set) {
-          $result = $result->union($set);
-      }
+        if (count($sets) === 1) {
+            return $sets[0];
+        }
 
-      return $result;
+        $result = array_shift($sets);
+
+        foreach ($sets as $set) {
+            $result = $result->union($set);
+        }
+
+        return $result;
     }
 
     /**
      * Intersection of a family (array) of sets
      *   ([a,b,c]) => a n b n c
      *
-     * @param array $sets -- the family of sets to take the intersection of
+     * @param array<int, Set> $sets The family of sets to take the intersection of
      * @return Set
      */
-    public static function IntersectionOfArray(array $sets) : Set
+    public static function familyIntersection(array $sets): Set
     {
-      /* trivial cases */
-      if( count($sets) == 0 ) return new Set(); # should be error, not {}
-      if( count($sets) == 1 ) return $sets[0];
+        /* trivial cases */
+        if (count($sets) === 0) {
+            return new Set();
+        }
 
-      $result = array_shift($sets);
-      foreach($sets as $set) {
-          $result = $result->intersect($set);
-      }
+        # should be error, not {}
+        if (count($sets) === 1) {
+            return $sets[0];
+        }
 
-      return $result;
+        $result = array_shift($sets);
+
+        foreach ($sets as $set) {
+            $result = $result->intersect($set);
+        }
+
+        return $result;
     }
 }

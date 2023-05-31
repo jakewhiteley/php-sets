@@ -1,19 +1,19 @@
 language: php
 
 php:
-  - '7.1'
-  - '7.2'
-  - '7.3'
   - '7.4'
+  - '8.0'
+  - '8.1'
+  - '8.2'
 
 install:
   - composer install
   - composer require satooshi/php-coveralls:~1.0@stable
-  
-before_script:
- - mkdir -p build/logs 
 
-script: 
+before_script:
+ - mkdir -p build/logs
+
+script:
  - vendor/bin/phpunit --coverage-clover build/logs/clover.xml
 
 after_success:
