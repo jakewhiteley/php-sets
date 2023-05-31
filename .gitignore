@@ -2,3 +2,4 @@
 .idea/
 
 Bench.php
+.phpunit.result.cache

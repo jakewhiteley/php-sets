@@ -163,7 +163,7 @@ class SetTest extends TestCase
         $set2->add(null);
 
         $expected = [1, 2, null];
-        $result = $set->unison($set2)->values();
+        $result = $set->union($set2)->values();
 
         $this->assertSame($expected, $result);
     }
@@ -230,10 +230,98 @@ class SetTest extends TestCase
         $this->assertEqualsArray([1, 'three', 3, 4], $set2->symmetricDifference($set1)->values());
     }
 
+    public function testFromArray()
+    {
+        $set1 = new Set(1, 2, 'three');
+        $set2 = Set::FromArray([1, 2, 'three']);
+
+        $this->assertEquals($set1->values(),$set2->values());
+    }
+
+    public function testUnionOfArray()
+    {
+      # Test equal sets 
+      $set1 = new Set(1,2);
+      $set2 = new Set(1,2);
+      $sets = [ $set1, $set2 ];
+      $set_expected = new Set(1,2);
+      $set_union = Set::UnionOfArray($sets);
+
+      $this->assertEquals($set_union->values(),$set_expected->values());
+
+      # Test disjoint sets 
+      $set1 = new Set(1,2);
+      $set2 = new Set(3,4);
+      $sets = [ $set1, $set2 ];
+      $set_expected = new Set(1,2,3,4);
+      $set_union = Set::UnionOfArray($sets);
+
+      $this->assertEquals($set_union->values(),$set_expected->values());
+
+      # Test sets with nonempty intersection
+      $set1 = new Set(1,2,3);
+      $set2 = new Set(3,4,5);
+      $sets = [ $set1, $set2 ];
+      $set_expected = new Set(1,2,3,4,5);
+      $set_union = Set::UnionOfArray($sets);
+
+      $this->assertEquals($set_union->values(),$set_expected->values());
+
+      # Test sets where one is subset of another
+      $set1 = new Set(1,2,3);
+      $set2 = new Set(1,2,3,4,5);
+      $sets = [ $set1, $set2 ];
+      $set_expected = new Set(1,2,3,4,5);
+      $set_union = Set::UnionOfArray($sets);
+
+      $this->assertEquals($set_union->values(),$set_expected->values());
+    }
+
+    public function testIntersectionOfArray()
+    {
+      # Test equal sets 
+      $set1 = new Set(1,2);
+      $set2 = new Set(1,2);
+      $sets = [ $set1, $set2 ];
+      $set_expected = new Set(1,2);
+      $set_intersection = Set::IntersectionOfArray($sets);
+
+      $this->assertEquals($set_intersection->values(),$set_expected->values());
+
+      # Test disjoint sets 
+      $set1 = new Set(1,2);
+      $set2 = new Set(3,4);
+      $sets = [ $set1, $set2 ];
+      $set_expected = new Set();
+      $set_intersection = Set::IntersectionOfArray($sets);
+
+      $this->assertEquals($set_intersection->values(),$set_expected->values());
+
+      # Test sets with nonempty intersection
+      $set1 = new Set(1,2,3);
+      $set2 = new Set(2,3,4,5);
+      $sets = [ $set1, $set2 ];
+      $set_expected = new Set(2,3);
+      $set_intersection = Set::IntersectionOfArray($sets);
+
+      $this->assertEquals($set_intersection->values(),$set_expected->values());
+
+      # Test sets where one is subset of another
+      $set1 = new Set(1,2,3);
+      $set2 = new Set(1,2,3,4,5);
+      $sets = [ $set1, $set2 ];
+      $set_expected = new Set(1,2,3);
+      $set_intersection = Set::IntersectionOfArray($sets);
+
+      $this->assertEquals($set_intersection->values(),$set_expected->values());
+    }
+
     protected function assertEqualsArray($expected, $actual, $message = '')
     {
         sort($expected);
         sort($actual);
         $this->assertEquals($expected, $actual, $message);
     }
+
+
 }

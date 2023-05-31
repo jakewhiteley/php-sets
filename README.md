@@ -27,7 +27,9 @@ Sets require a min PHP version of 7.1.
     * [Symmetric difference](#symmetric-difference)
     * [Intersect](#intersect)
     * [Subsets](#subsets)
-
+* [**Set family operations**](#set-family-operations)
+    * [UnionOfArray](#union-of-array)
+    * [IntersectionOfArray](#intersection-of-array)
 
 ## Installation
 You can download the latest release via the releases link on this page.
@@ -61,6 +63,11 @@ Sets cannot contain duplicate values, and values are stored in insertion order.
 // $set contains [1, 2, 3] as duplicates are not stored
 $set = new Set(1, 2, 1, 3, 2);
 ````
+
+If you have an array of elements, you can create a set containing those values.
+```php
+$set = Set::FromArray([1, 2, 3]);
+```
 
 #### Adding values
 Values of any type (Including Objects, arrays, and other `Sets`) are added to a set via the `add()` method.
@@ -245,6 +252,46 @@ $b = new Set(2, 3);
 var_Dump($b->isSupersetOf($a)); // true
 var_Dump($a->isSupersetOf($b)); // false
 ````
+
+## Set family operations
+
+If we have a collection of sets, for example `{ { 1,2,3 }, { 3,4,5 } , { 3, 5, 6, 7 } }`, often called a *family* of sets
+in Set Theory, we can take the union and intersection of the family. That is, `( { 1, 2, 3 } union { 3, 4, 5 } ) union { 3, 5, 6, 7 }` and likewise for intersection. In Set Theory a large union and intersection symbol is used for this purpose.
+
+Note that, at present, these operations are implemented
+naively by iteratively calling the `union` and `intersect`
+methods above. More efficient implementations are possible
+and welcome.
+
+#### Union of a Family of Sets
+
+At present the family of sets needs to be in an array of `Set`s.
+Then we pass that array of sets to `Set::UnionOfArray()`.
+For example:
+```php
+$set1 = Set(1,2,3);
+$set2 = Set(3,4,5);
+$set_family = [ $set1, $set2 ];
+$set_union = Set::UnionOfArray($set_family);
+```
+
+#### Intersection of a Family of Sets
+
+As with `UnionOfArray`, the family of sets needs to be in an array of `Set`s.
+Then pass that array of sets to `Set::IntersectionOfArray()`.
+For example:
+```php
+$set1 = Set(1,2,3);
+$set2 = Set(3,4,5);
+$set_family = [ $set1, $set2 ];
+$set_intersection = Set::IntersectionOfArray($set_family);
+```
+
+Note that, contrary to Set Theory, the result of
+taking the intersection of an empty array results
+in an empty array. (In Set Theory the intersection
+of an empty family is undefined as it would be the
+'set of all sets'.)
 
 ### Contributing
 Contributions and changes welcome! Just open an issue or submit a PR :muscle:

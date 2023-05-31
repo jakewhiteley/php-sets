@@ -142,7 +142,7 @@ class Set extends ArrayObject
      * @param Set $set The set to append
      * @return Set A new set containing the merged items
      */
-    public function unison(Set $set): Set
+    public function union(Set $set): Set
     {
         $merged = new Set();
         $merged->exchangeArray($this->values());
@@ -170,7 +170,7 @@ class Set extends ArrayObject
         }
 
         if ($set->size === 0) {
-            return (new Set())->unison($this);
+            return (new Set())->union($this);
         }
 
         $intersect = new Set;
@@ -247,7 +247,7 @@ class Set extends ArrayObject
      * @param mixed    $value  The value to insert
      * @return void
      */
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value) : void
     {
         $temp = $this->values();
 
@@ -270,7 +270,7 @@ class Set extends ArrayObject
      * @param int $offset The key to remove a value at
      * @return void
      */
-    public function offsetUnset($offset)
+    public function offsetUnset($offset) : void
     {
         $temp = $this->values();
 
@@ -281,5 +281,60 @@ class Set extends ArrayObject
         $this->exchangeArray(array_values($temp));
 
         $this->size = $this->count();
+    }
+
+    /**
+     * Create a function given an array
+     *
+     * @param array $elements The array of elements to create the set from
+     * @return Set
+     */
+    public static function FromArray( array $elements ) : Set
+    {
+        $set_reflector = new \ReflectionClass("\PhpSets\Set");
+
+        return $set_reflector->newInstanceArgs($elements);
+    }
+
+    /**
+     * Union of a family (array) of sets
+     *   ([a,b,c]) => a u b u c
+     *
+     * @param array $sets -- the family of sets to take the union of
+     * @return Set
+     */
+    public static function UnionOfArray( array $sets ) : Set
+    {
+      /* trivial cases */
+      if( count($sets) == 0 ) return new Set();
+      if( count($sets) == 1 ) return $sets[0];
+
+      $result = array_shift($sets);
+      foreach($sets as $set) {
+          $result = $result->union($set);
+      }
+
+      return $result;
+    }
+
+    /**
+     * Intersection of a family (array) of sets
+     *   ([a,b,c]) => a n b n c
+     *
+     * @param array $sets -- the family of sets to take the intersection of
+     * @return Set
+     */
+    public static function IntersectionOfArray(array $sets) : Set
+    {
+      /* trivial cases */
+      if( count($sets) == 0 ) return new Set(); # should be error, not {}
+      if( count($sets) == 1 ) return $sets[0];
+
+      $result = array_shift($sets);
+      foreach($sets as $set) {
+          $result = $result->intersect($set);
+      }
+
+      return $result;
     }
 }
