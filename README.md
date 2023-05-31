@@ -7,7 +7,7 @@ A set is simply a group of unique things that can be iterated by the order they 
 
 Implementation is based on the [MDN JS Reference](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Set) for Sets in EMCA 6 JavaScript.
 
-Sets require a min PHP version of 7.1.
+Sets require a min PHP version of 7.4.
 
 * [Installation](#installation)
 * [**Basic usage:**](#basic-usage)
