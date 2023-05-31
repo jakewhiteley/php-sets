@@ -1,4 +1,4 @@
-name: CI-old-php
+name: php-74
 
 on: [push]
 
@@ -20,3 +20,4 @@ jobs:
           configuration: test/phpunit.xml
           args: --coverage-text
           php_version: "7.4"
+          version: "9.6.8"
